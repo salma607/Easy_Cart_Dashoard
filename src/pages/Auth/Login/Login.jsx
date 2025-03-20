@@ -1,0 +1,107 @@
+import { useState } from "react";
+import {
+  Button,
+  TextField,
+  IconButton,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+} from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <div className="p-8 bg-[#7fb833]">
+      <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg">
+        <div className="w-full">
+          <img src="/src/assets/food.png" className="w-full" />
+        </div>
+        <div className="bg-white w-full flex flex-col justify-center items-center rounded-r-lg">
+          <div>
+            <ShoppingCartIcon sx={{ fontSize: 140, color: "#76ab2f" }} />
+          </div>
+          <div className="lg:text-[90px] text-[40px] font-bold text-[#000000]">
+            <h1 className="text-3xl font-bold justify-center items-center m-5">
+              Sign in to your account
+            </h1>
+          </div>
+          <div className="rest-data w-full space-y-3 flex flex-col justify-center items-center">
+            <form className="signup-form">
+              <div className="rest-data space-y-6 flex flex-col justify-center items-center">
+                <TextField
+                  id="outlined-email"
+                  label="Email"
+                  variant="outlined"
+                  color="#e0e0e0"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#e0e0e0",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#76ab2f",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#76ab2f",
+                      },
+                    },
+                    width: "400px",
+                  }}
+                />
+                <FormControl
+                  variant="outlined"
+                  color="#e0e0e0"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#e0e0e0",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#76ab2f",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#76ab2f",
+                      },
+                    },
+                    width: "400px",
+                  }}
+                >
+                  <InputLabel htmlFor="outlined-password">Password</InputLabel>
+                  <OutlinedInput
+                    id="outlined-password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    }
+                    label="Password"
+                  />
+                </FormControl>
+                <Button
+                  href="/"
+                  variant="contained"
+                  disableElevation
+                  sx={{ width: "50%", backgroundColor: "#76ab2f" }}
+                >
+                  Login
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

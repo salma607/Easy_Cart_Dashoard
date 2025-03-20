@@ -170,7 +170,7 @@ const data = [
 
 export default function Graphs() {
     return (
-      <div className=" m-5 p-6 flex flex-row justify-center gap-40 border-4 border-lime-500 rounded-md shadow-xl ">
+      <div className=" m-5 p-6 grid lg:grid-cols-2 grid-cols-1 gap-40 border-2 border-stone-200 rounded-md shadow-xl ">
   <div className="grid grid-cols-1  ">
     <LineChart
       xAxis={[{ data: [0, 2, 4, 6, 8, 10] }]}
