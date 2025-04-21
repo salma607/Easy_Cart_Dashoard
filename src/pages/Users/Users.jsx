@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Tooltip } from '@mui/material';
-import { Block, Delete } from '@mui/icons-material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Fab } from '@mui/material';
+import { Block, Delete, Add } from '@mui/icons-material';
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
 
@@ -17,8 +17,62 @@ const initialUsersData = [
   { id: 107855, name: 'Hank Ives', email: 'hank.ives@example.com', active: false },
 ];
 
+// Styles as constants
+const textFieldStyles = {
+  margin: "dense",
+  fullWidth: true,
+  variant: "outlined",
+  color: "#e0e0e0",
+  sx: {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#e0e0e0",
+      },
+      "&:hover fieldset": {
+        borderColor: "#76ab2f",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#76ab2f",
+      },
+    },
+  },
+};
+
+const buttonStyles = {
+  color: "#76ab2f",
+  "&:hover": {
+    color: "#76ab2f",
+    backgroundColor: "#f7fee7",
+    borderRadius: "8px",
+  },
+};
+
+const iconButtonStyles = {
+  block: (blocked) => ({
+    color: blocked ? 'red' : 'inherit',
+  }),
+  delete: {
+    color: "#76ab2f",
+    "&:hover": {
+      color: "#76ab2f",
+      backgroundColor: "#f7fee7",
+      borderRadius: "8px",
+    },
+  },
+};
+
+const fabStyles = {
+  position: 'fixed',
+  bottom: 16,
+  right: 16,
+  backgroundColor: "#76ab2f",
+};
+
 export default function Users() {
   const [users, setUsers] = useState(initialUsersData);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [newUser, setNewUser] = useState({ id: '', name: '', email: '', active: false });
+  const [loading] = useState(false);
 
   const handleBlockClick = (userId) => {
     setUsers(users.map(user => 
@@ -30,6 +84,34 @@ export default function Users() {
     setUsers(users.filter(user => user.id !== userId));
   };
 
+  const handleAddUser = () => {
+    if (!newUser.id || !newUser.name || !newUser.email) {
+      alert("Please provide all details (ID, Name, Email).");
+      return;
+    }
+
+    // Check if the ID already exists
+    if (users.some(user => user.id === Number(newUser.id))) {
+      alert("User with the same ID already exists.");
+      return;
+    }
+
+    // Add the new user to the state
+    setUsers([
+      ...users,
+      {
+        id: Number(newUser.id),
+        name: newUser.name,
+        email: newUser.email,
+        active: true,
+      },
+    ]);
+
+    // Reset the form and close the dialog
+    setNewUser({ id: "", name: "", email: "", active: false });
+    setAddDialogOpen(false);
+  };
+
   return (
     <div className="flex h-screen">
       <div>
@@ -38,9 +120,10 @@ export default function Users() {
       <div className="w-full flex flex-col">
         <Header />
         <div className="mt-8 p-4">
+          {/* Users Table */}
           <TableContainer component={Paper}>
             <Table>
-              <TableHead sx={{backgroundColor: "#76ab2f"}}>
+              <TableHead sx={{ backgroundColor: "#76ab2f" }}>
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Name</TableCell>
@@ -57,7 +140,7 @@ export default function Users() {
                     <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.email}</TableCell>
                     <TableCell>
                       {user.active ? (
-                        <Chip label="Active" sx={{ backgroundColor: "#76ab2f"}} />
+                        <Chip label="Active" sx={{ backgroundColor: "#76ab2f" }} />
                       ) : (
                         <Chip label="Inactive" color="default" />
                       )}
@@ -66,7 +149,7 @@ export default function Users() {
                       <Tooltip title="Block/Unblock User">
                         <IconButton 
                           onClick={() => handleBlockClick(user.id)} 
-                          sx={{ color: user.blocked ? 'red' : 'inherit' }}
+                          sx={iconButtonStyles.block(user.blocked)}
                         >
                           <Block />
                         </IconButton>
@@ -74,7 +157,7 @@ export default function Users() {
                       <Tooltip title="Delete User">
                         <IconButton 
                           onClick={() => handleDeleteClick(user.id)} 
-                          color="error"
+                          sx={iconButtonStyles.delete}
                         >
                           <Delete />
                         </IconButton>
@@ -86,6 +169,50 @@ export default function Users() {
             </Table>
           </TableContainer>
         </div>
+
+        {/* Add User Dialog */}
+        <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
+          <DialogTitle>Add New Worker</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="ID"
+              value={newUser.id}
+              onChange={(e) => setNewUser({ ...newUser, id: e.target.value })}
+              type="number"
+              {...textFieldStyles}
+            />
+            <TextField
+              label="Name"
+              value={newUser.name}
+              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+              {...textFieldStyles}
+            />
+            <TextField
+              label="Email"
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+              {...textFieldStyles}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setAddDialogOpen(false)} {...buttonStyles.cancel}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddUser} {...buttonStyles.add} disabled={loading}>
+              {loading ? "Loading..." : "Add"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Floating Add Button */}
+        <Fab 
+          color="#76ab2f" 
+          aria-label="add" 
+          onClick={() => setAddDialogOpen(true)} 
+          sx={fabStyles}
+        >
+          <Add />
+        </Fab>
       </div>
     </div>
   );

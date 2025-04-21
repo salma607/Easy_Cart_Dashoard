@@ -1,76 +1,74 @@
-import { useState } from 'react';
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Chip, IconButton, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { Add, FilterList, Delete } from '@mui/icons-material';
+import { useState, useEffect } from 'react';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
+import DotsLoader from '../../Component/DotsLoader/DotsLoader';
+import AddCart from './AddCart';
 
-const initialCartData = [
-  { code: 'CART001', lastService: '2025-02-28', hasProblem: false, position: 'Aisle 1' },
-  { code: 'CART002', lastService: '2025-03-01', hasProblem: true, position: 'Aisle 2' },
-  { code: 'CART003', lastService: '2025-02-25', hasProblem: false, position: 'Aisle 3' },
-  { code: 'CART004', lastService: '2025-03-03', hasProblem: true, position: 'Aisle 4' },
-  { code: 'CART005', lastService: '2025-02-27', hasProblem: false, position: 'Aisle 5' },
-];
 
 export default function CartService() {
-  const [cartData, setCartData] = useState(initialCartData);
-  const [filter, setFilter] = useState('');
-  const [open, setOpen] = useState(false);
-  const [newCartCode, setNewCartCode] = useState('');
-  const [newCartDate, setNewCartDate] = useState('');
-  const [newCartPosition, setNewCartPosition] = useState('');
+  const [cartData, setCartData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleAddCartOpen = () => {
-    setOpen(true);
-  };
+  // Retrieve the token from localStorage
+  const token = localStorage.getItem('token');
 
-  const handleAddCartClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    fetchCartData();
+  }, []);
 
-  const handleAddCart = () => {
-    if (newCartCode && newCartDate && newCartPosition) {
-      const newCart = {
-        code: newCartCode,
-        lastService: newCartDate,
-        hasProblem: false,
-        position: newCartPosition,
-      };
-      setCartData([...cartData, newCart]);
-      setNewCartCode('');
-      setNewCartDate('');
-      setNewCartPosition('');
-      handleAddCartClose();
+  const fetchCartData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('https://shehab123.pythonanywhere.com/cart/manageEsyCart/', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token here
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const mappedData = data.map(cart => ({
+          code: cart.cartId,
+          lastService: cart.lastMaintenanceTime,
+          hasProblem: cart.cartStatus !== "ready",
+          position: cart.location,
+          battery: `${cart.batteryPercentage}%`,
+        }));
+        setCartData(mappedData);
+      } else {
+        console.error('Failed to fetch cart data:', await response.text());
+      }
+    } catch (error) {
+      console.error('Failed to fetch cart data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+  const handleDeleteCart = async (cartCode) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`https://shehab123.pythonanywhere.com/cart/manageEsyCart/${cartCode}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token here
+        },
+      });
+
+      if (response.ok) {
+        fetchCartData(); // Refresh the cart list after deletion
+      } else {
+        console.error('Failed to delete cart:', await response.text());
+      }
+    } catch (error) {
+      console.error('Failed to delete cart:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteCart = (cartCode) => {
-    setCartData(cartData.filter(cart => cart.code !== cartCode));
-  };
-
-  const filteredCartData = cartData.filter(cart => 
-    cart.code.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  const TextfieldSx={
-   
-      "& .MuiOutlinedInput-root": {
-        "& fieldset": {
-          borderColor: "#e0e0e0",
-        },
-        "&:hover fieldset": {
-          borderColor: "#76ab2f",
-        },
-        "&.Mui-focused fieldset": {
-          borderColor: "#76ab2f",
-        },
-      },
-    
-  }
   return (
     <div className="flex h-screen">
       <div>
@@ -78,66 +76,25 @@ export default function CartService() {
       </div>
       <div className="w-full flex flex-col">
         <Header />
+        <div className=" p-5 flex flex-col items-end"   >
+<AddCart/>
+</div>
         <Container className="mt-8 p-4 bg-white shadow-md rounded-md">
-          <div className="flex justify-end mb-6">
-            <div className="flex space-x-4">
-              <TextField 
-                variant="outlined"
-                size='small'
-                placeholder="Filter"
-                 color="#e0e0e0"
-                value={filter}
-                onChange={handleFilterChange}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton  sx={{
-                      color: "#76ab2f",
-                      "&:hover": {
-                        color: "#76ab2f",
-                        backgroundColor: "#f7fee7",
-                        borderRadius: "8px",
-                      },
-                    }}>
-                      <FilterList />
-                    </IconButton>
-                  ),
-                }}
-                sx={TextfieldSx}/>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={handleAddCartOpen}
-                sx={{
-                  backgroundColor: '#76ab2f',
-                  '&:hover': {
-                    backgroundColor: '#5a8f24',
-                  },
-                }}
-              >
-                Add Cart
-              </Button>
-            </div>
-          </div>
           <div className="mb-6">
-            <div className="bg-gray-200 h-64 w-full mb-4">
-              {/* Virtual map of the supermarket */}
-              <div className="flex justify-center items-center h-full">
-                <h3 className="text-xl">Virtual Supermarket Map</h3>
-              </div>
-            </div>
             <TableContainer component={Paper}>
               <Table>
-                <TableHead sx={{backgroundColor: "#76ab2f"}} >
+                <TableHead sx={{ backgroundColor: "#76ab2f" }}>
                   <TableRow>
                     <TableCell>Cart Code</TableCell>
                     <TableCell>Last Service Date</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Position</TableCell>
+                    <TableCell>Battery</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredCartData.map((cart) => (
+                  {cartData.map((cart) => (
                     <TableRow key={cart.code} className={cart.hasProblem ? 'bg-red-100' : ''}>
                       <TableCell>{cart.code}</TableCell>
                       <TableCell>{cart.lastService}</TableCell>
@@ -149,6 +106,7 @@ export default function CartService() {
                         )}
                       </TableCell>
                       <TableCell>{cart.position}</TableCell>
+                      <TableCell>{cart.battery}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => handleDeleteCart(cart.code)} color="error">
                           <Delete />
@@ -161,56 +119,7 @@ export default function CartService() {
             </TableContainer>
           </div>
         </Container>
-
-        <Dialog open={open} onClose={handleAddCartClose}>
-          <DialogTitle>Add New Cart</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please enter the details for the new cart.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Cart Code"
-              fullWidth
-               color="#e0e0e0"
-              variant="outlined"
-              value={newCartCode}
-              onChange={(e) => setNewCartCode(e.target.value)}
-              sx={TextfieldSx}/>
-            <TextField
-              margin="dense"
-              label="Last Service Date"
-              type="date"
-               color="#e0e0e0"
-              fullWidth
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={newCartDate}
-              onChange={(e) => setNewCartDate(e.target.value)}
-             sx={TextfieldSx}/>
-            <TextField
-              margin="dense"
-              label="Position"
-              fullWidth
-               color="#e0e0e0"
-              variant="outlined"
-              value={newCartPosition}
-              onChange={(e) => setNewCartPosition(e.target.value)}
-              sx={TextfieldSx}/>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleAddCartClose} sx={{ color: "#76ab2f", borderRadius: "8px" }}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddCart} sx={{ color: "#76ab2f", borderRadius: "8px" }}>
-              Add
-            </Button>
-          </DialogActions>
-        </Dialog>
-        
+        {loading && <DotsLoader />}
       </div>
     </div>
   );

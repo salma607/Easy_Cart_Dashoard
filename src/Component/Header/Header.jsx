@@ -4,15 +4,16 @@ import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import SearchIcon from "@mui/icons-material/Search";
+import Avatar from '@mui/material/Avatar'; // Example for Material-UI Avatar
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import Button from "@mui/material/Button";
-import { InputBase, Link, Avatar } from "@mui/material";
+
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate and Link
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuRef = useRef(null);
-  const [searchActive, setSearchActive] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleNotificationsClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -42,29 +43,14 @@ export default function Header() {
   }, [menuRef]);
 
   return (
-    <div className="flex flex-row justify-between items-center p-5">
+    <div className="flex flex-row justify-between items-center p-5 bg-[#76ab2f] h-20">
       <div className="flex-grow flex justify-center">
-        <InputBase
-          sx={{
-            width: "50%",
-            maxWidth: 300,
-            border: searchActive ? "1px solid #76ab2f" : "1px solid #ccc",
-            borderRadius: 1,
-            paddingLeft: 2,
-            paddingRight: 2,
-            transition: "border 0.3s",
-          }}
-          placeholder="Search"
-          startAdornment={<SearchIcon sx={{ marginRight: 1, color: "#76ab2f",fontSize: 20 }} />}
-          onFocus={() => setSearchActive(true)}
-          onBlur={() => setSearchActive(false)}
-        />
       </div>
-      <div className="flex">
+      <div className="flex ">
         <Button
           sx={{
-            color: "#76ab2f",
-            ":hover": { bgcolor: "#f7fee7", color: "#76ab2f" },
+            color: "#f7fee7",
+            
           }}
           onClick={handleNotificationsClick}
         >
@@ -85,10 +71,10 @@ export default function Header() {
               {notification}
             </MenuItem >
           ))}
-          <MenuItem onClick={handleClose} sx={{ fontWeight: '300'}}>
+          <MenuItem onClick={handleClose} sx={{ fontWeight: '300' }}>
             <Link
-              href="/notifications"
-              sx={{
+              to="/notifications"
+              style={{
                 textDecoration: "none",
                 color: "inherit",
                 width: "100%",
@@ -100,8 +86,7 @@ export default function Header() {
         </Menu>
         <Button
           sx={{
-            color: "#76ab2f",
-            ":hover": { bgcolor: "#f7fee7", color: "#76ab2f" },
+            color: "#f7fee7"
           }}
         >
           <ChatBubbleIcon />
@@ -115,7 +100,7 @@ export default function Header() {
               padding: 0,
             }}
           >
-            <Avatar
+            <Avatar 
               alt="Profile Photo"
               src="https://via.placeholder.com/150"
               sx={{ width: 40, height: 40 }}
@@ -123,16 +108,15 @@ export default function Header() {
           </MenuButton>
           <Menu>
             <MenuItem>Profile</MenuItem>
-            <MenuItem>
-              <Link
-                href="http://localhost:5173/Login"
-                sx={{
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
-                Logout
-              </Link>
+            <MenuItem
+              onClick={() => navigate("/")} // Navigate to /login on click
+              sx={{
+                textDecoration: "none",
+                color: "inherit",
+                cursor: "pointer",
+              }}
+            >
+              Logout
             </MenuItem>
           </Menu>
         </Dropdown>

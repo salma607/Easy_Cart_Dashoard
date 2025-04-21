@@ -10,6 +10,50 @@ import { Add } from "@mui/icons-material";
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
 
+// Constant styles for reusability
+const buttonStyles = {
+  primary: {
+    backgroundColor: '#76ab2f',
+    '&:hover': {
+      backgroundColor: '#5a8f24',
+    },
+  },
+  submit: {
+    backgroundColor: '#76ab2f',
+    '&:hover': {
+      backgroundColor: '#5a8f24',
+    },
+    width: '64px',
+    marginTop: '16px',
+  },
+};
+
+const iconButtonStyles = {
+  upload: {
+    fontSize: 40,
+    color: "#76ab2f",
+  },
+};
+
+const textFieldStyles = {
+  fullWidth: true,
+  variant: "outlined",
+  color: "#e0e0e0",
+  sx: {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#e0e0e0",
+      },
+      "&:hover fieldset": {
+        borderColor: "#76ab2f",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#76ab2f",
+      },
+    },
+  },
+};
+
 export default function Privacy() {
   const [isEditable, setIsEditable] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -62,17 +106,11 @@ export default function Privacy() {
         <Header />
         <Container className="mt-8 p-4 bg-white shadow-md rounded-md">
           <div className="flex justify-between items-center mb-6">
-            
             <Button
               variant="contained"
               size="small"
               onClick={handleEditClick}
-              sx={{
-                backgroundColor: '#76ab2f',
-                '&:hover': {
-                  backgroundColor: '#5a8f24',
-                },
-              }}
+              sx={buttonStyles.primary}
             >
               Edit
             </Button>
@@ -96,16 +134,12 @@ export default function Privacy() {
               className="absolute top-0 right-0"
             >
               <IconButton
-                
                 aria-label="upload picture"
                 component="span"
                 size="small"
                 disabled={!isEditable}
-                className=" rounded-full"
-                sx={{
-                 fontSize: 40, color: "#76ab2f"
-                  
-                }}
+                className="rounded-full"
+                sx={iconButtonStyles.upload}
               >
                 <Add />
               </IconButton>
@@ -114,91 +148,71 @@ export default function Privacy() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <TextField
               label="First Name"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Second Name"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="secondName"
               value={formData.secondName}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Password"
               type="password"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Phone Number"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Email"
               type="email"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Address"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="address"
               value={formData.address}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <TextField
               label="Postcode"
-              variant="outlined"
-              fullWidth
-              disabled={!isEditable}
-              className="bg-gray-100"
               name="postcode"
               value={formData.postcode}
               onChange={handleInputChange}
+              disabled={!isEditable}
+              {...textFieldStyles}
             />
             <Button
-  variant="contained"
-  type="submit"
-  disabled={!isEditable}
-  className="w-64 mt-4"
-  size="small"
-  sx={{
-    backgroundColor: '#76ab2f',
-    '&:hover': {
-      backgroundColor: '#5a8f24',
-    },
-  }}
->
-  Submit
-</Button>
+              variant="contained"
+              type="submit"
+              disabled={!isEditable}
+              size="small"
+              sx={buttonStyles.submit}
+            >
+              Submit
+            </Button>
           </form>
         </Container>
       </div>

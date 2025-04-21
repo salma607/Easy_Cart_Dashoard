@@ -1,21 +1,33 @@
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
 import Cards from "../../Component/Cards/Cards";
-import Tables from "../../Component/Tables/Tables";
+import ProductTable from "../../Component/Tables/ProductTable"; // Import ProductTable
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import DotsLoader from "../../Component/DotsLoader/DotsLoader";
 import { getAllProducts } from "../../reduex/services/ProductServices/ProductService";
+import CategoriesTable from "../../Component/Tables/CateogriesTable";
+import AddProduct from "../../Component/Tables/AddProduct";
+
+
 export default function Product() {
   const dispatch = useDispatch();
   const { Products } = useSelector((state) => state.product); // Ensure the correct state path
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getAllProducts());
+    const fetchProducts = async () => {
+      setLoading(true);
+      await dispatch(getAllProducts());
+      setLoading(false);
+    };
+
+    fetchProducts();
   }, [dispatch]);
 
-  // const refreshPageContent = () => {
-  //   dispatch(getAllProducts());
-  // };
+  if (loading) {
+    return <DotsLoader />;
+  }
 
   return (
     <div className="flex h-screen">
@@ -25,9 +37,11 @@ export default function Product() {
       <div className="w-full">
         <Header />
         <Cards />
-        <div className="pb-5">
-          <Tables Products={Products} /> {/* Pass Products to Tables */}
-        </div>
+<div className="p-5" >
+  <AddProduct/>
+        <CategoriesTable />
+          <ProductTable Products={Products} /> 
+          </div>
       </div>
     </div>
   );
