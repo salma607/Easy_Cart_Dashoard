@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
 import ProductTable from "../../Component/Tables/ProductTable"; // Import ProductTable
-import { getAllProducts } from "../../reduex/services/ProductServices/ProductService";
+ // Ensure the correct import path
 import AddProduct from "../../Component/Tables/AddProduct";
 import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
+import { getAllProducts } from "../../redux/services/ProductServices/ProductService";
 
 export default function Product() {
   const dispatch = useDispatch();

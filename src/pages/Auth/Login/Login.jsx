@@ -10,9 +10,12 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../../reduex/services/AuthService";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {useEffect} from "react";
+import { loginUser } from "../../../redux/services/AuthService";
+
+
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +45,7 @@ export default function Login() {
 
   return (
     <div className="p-8 bg-[#7fb833]">
-      <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg">
+      <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg"> 
         <div className="w-full">
           <img src="/src/assets/food.png" className="w-full" />
         </div>
