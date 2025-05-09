@@ -1,21 +1,9 @@
-import { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Fab } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Fab, TablePagination } from '@mui/material';
 import { Block, Delete, Add } from '@mui/icons-material';
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
-
-const initialUsersData = [
-  { id: 126525, name: 'John Doe', email: 'john.doe@example.com', active: true },
-  { id: 2856241, name: 'Jane Smith', email: 'jane.smith@example.com', active: false },
-  { id: 37468, name: 'Alice Johnson', email: 'alice.johnson@example.com', active: true },
-  { id: 44582, name: 'Bob Brown', email: 'bob.brown@example.com', active: false },
-  { id: 52258, name: 'Charlie Davis', email: 'charlie.davis@example.com', active: true },
-  { id: 60025, name: 'Dana Evans', email: 'dana.evans@example.com', active: false },
-  { id: 77859, name: 'Eve Foster', email: 'eve.foster@example.com', active: true },
-  { id: 81256, name: 'Frank Green', email: 'frank.green@example.com', active: false },
-  { id: 9251, name: 'Grace Hall', email: 'grace.hall@example.com', active: true },
-  { id: 107855, name: 'Hank Ives', email: 'hank.ives@example.com', active: false },
-];
+import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
 
 // Styles as constants
 const textFieldStyles = {
@@ -69,10 +57,34 @@ const fabStyles = {
 };
 
 export default function Users() {
-  const [users, setUsers] = useState(initialUsersData);
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newUser, setNewUser] = useState({ id: '', name: '', email: '', active: false });
-  const [loading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    // Simulate fetching user data
+    const fetchUsers = async () => {
+      setTimeout(() => {
+        setUsers([
+          { id: 126525, name: 'John Doe', email: 'john.doe@example.com', active: true },
+          { id: 2856241, name: 'Jane Smith', email: 'jane.smith@example.com', active: false },
+          { id: 37468, name: 'Alice Johnson', email: 'alice.johnson@example.com', active: true },
+          { id: 44582, name: 'Bob Brown', email: 'bob.brown@example.com', active: false },
+          { id: 52258, name: 'Charlie Davis', email: 'charlie.davis@example.com', active: true },
+          { id: 60025, name: 'Dana Evans', email: 'dana.evans@example.com', active: false },
+          { id: 77859, name: 'Eve Foster', email: 'eve.foster@example.com', active: true },
+          { id: 81256, name: 'Frank Green', email: 'frank.green@example.com', active: false },
+          { id: 9251, name: 'Grace Hall', email: 'grace.hall@example.com', active: true },
+          { id: 107855, name: 'Hank Ives', email: 'hank.ives@example.com', active: false },
+        ]);
+        setIsLoading(false); // Set loading to false after data is fetched
+      }, 2000); // Simulated delay
+    };
+    fetchUsers();
+  }, []);
 
   const handleBlockClick = (userId) => {
     setUsers(users.map(user => 
@@ -112,6 +124,23 @@ export default function Users() {
     setAddDialogOpen(false);
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotsLoader />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen">
       <div>
@@ -121,9 +150,12 @@ export default function Users() {
         <Header />
         <div className="mt-8 p-4">
           {/* Users Table */}
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead sx={{ backgroundColor: "#76ab2f" }}>
+          <TableContainer component={Paper} sx={{overflow:"auto", maxHeight: 750}}>
+            <Table >
+              <TableHead sx={{ backgroundColor: "#76ab2f" ,position: 'sticky', top: 0, zIndex: 1,"& th": {
+                  color: "#fff",
+                  fontWeight: "bold",
+                },}}>
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Name</TableCell>
@@ -133,41 +165,54 @@ export default function Users() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.id}</TableCell>
-                    <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.name}</TableCell>
-                    <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.email}</TableCell>
-                    <TableCell>
-                      {user.active ? (
-                        <Chip label="Active" sx={{ backgroundColor: "#76ab2f" }} />
-                      ) : (
-                        <Chip label="Inactive" color="default" />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip title="Block/Unblock User">
-                        <IconButton 
-                          onClick={() => handleBlockClick(user.id)} 
-                          sx={iconButtonStyles.block(user.blocked)}
-                        >
-                          <Block />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete User">
-                        <IconButton 
-                          onClick={() => handleDeleteClick(user.id)} 
-                          sx={iconButtonStyles.delete}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {users
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((user) => (
+                    <TableRow key={user.id} >
+                      <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.id}</TableCell>
+                      <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.name}</TableCell>
+                      <TableCell sx={{ textDecoration: user.blocked ? 'line-through' : 'none', color: user.blocked ? 'red' : 'inherit' }}>{user.email}</TableCell>
+                      <TableCell>
+                        {user.active ? (
+                          <Chip label="Active" sx={{ backgroundColor: "#76ab2f" }} />
+                        ) : (
+                          <Chip label="Inactive" color="default" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip title="Block/Unblock User">
+                          <IconButton 
+                            onClick={() => handleBlockClick(user.id)} 
+                            sx={iconButtonStyles.block(user.blocked)}
+                          >
+                            <Block />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete User">
+                          <IconButton 
+                            onClick={() => handleDeleteClick(user.id)} 
+                            sx={iconButtonStyles.delete}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* Pagination */}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={users.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
 
         {/* Add User Dialog */}
@@ -198,8 +243,8 @@ export default function Users() {
             <Button onClick={() => setAddDialogOpen(false)} {...buttonStyles.cancel}>
               Cancel
             </Button>
-            <Button onClick={handleAddUser} {...buttonStyles.add} disabled={loading}>
-              {loading ? "Loading..." : "Add"}
+            <Button onClick={handleAddUser} {...buttonStyles.add}>
+              Add
             </Button>
           </DialogActions>
         </Dialog>

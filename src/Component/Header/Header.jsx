@@ -4,7 +4,7 @@ import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import Avatar from '@mui/material/Avatar'; // Example for Material-UI Avatar
+import Avatar from "@mui/material/Avatar"; // Example for Material-UI Avatar
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import Button from "@mui/material/Button";
 
@@ -23,11 +23,7 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-  const notifications = [
-    "Notification 1",
-    "Notification 2",
-    "Notification 3",
-  ];
+  const notifications = ["Notification 1", "Notification 2", "Notification 3"];
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -44,13 +40,11 @@ export default function Header() {
 
   return (
     <div className="flex flex-row justify-between items-center p-5 bg-[#76ab2f] h-20">
-      <div className="flex-grow flex justify-center">
-      </div>
+      <div className="flex-grow flex justify-center"></div>
       <div className="flex ">
         <Button
           sx={{
             color: "#f7fee7",
-            
           }}
           onClick={handleNotificationsClick}
         >
@@ -66,12 +60,12 @@ export default function Header() {
             <MenuItem
               key={index}
               onClick={handleClose}
-              sx={{ fontWeight: '300' }}
+              sx={{ fontWeight: "300" }}
             >
               {notification}
-            </MenuItem >
+            </MenuItem>
           ))}
-          <MenuItem onClick={handleClose} sx={{ fontWeight: '300' }}>
+          <MenuItem onClick={handleClose} sx={{ fontWeight: "300" }}>
             <Link
               to="/notifications"
               style={{
@@ -85,8 +79,9 @@ export default function Header() {
           </MenuItem>
         </Menu>
         <Button
+          onClick={() => navigate("/Help")} // Navigate to /chat on click
           sx={{
-            color: "#f7fee7"
+            color: "#f7fee7",
           }}
         >
           <ChatBubbleIcon />
@@ -100,21 +95,20 @@ export default function Header() {
               padding: 0,
             }}
           >
-            <Avatar 
+            <Avatar
               alt="Profile Photo"
               src="https://via.placeholder.com/150"
               sx={{ width: 40, height: 40 }}
             />
           </MenuButton>
           <Menu>
-            <MenuItem>Profile</MenuItem>
+            <MenuItem
+              onClick={() => navigate("/Privacy")} // Navigate to /Privacy on click
+            >
+              Profile
+            </MenuItem>
             <MenuItem
               onClick={() => navigate("/")} // Navigate to /login on click
-              sx={{
-                textDecoration: "none",
-                color: "inherit",
-                cursor: "pointer",
-              }}
             >
               Logout
             </MenuItem>

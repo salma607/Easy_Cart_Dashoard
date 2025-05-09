@@ -8,7 +8,6 @@ import Graphs from "./Component/Graphs/Graphs";
 import Product from "./pages/Product/Product";
 import Cards from "./Component/Cards/Cards";
 import ProductTable from "./Component/Tables/ProductTable";
-import CateogriesTable from "./Component/Tables/CateogriesTable";
 import Setting from "./pages/Setting/Setting";
 import Privacy from "./pages/Privacy/Privacy";
 import Users from "./pages/Users/Users";
@@ -18,6 +17,7 @@ import DotsLoader from "./Component/DotsLoader/DotsLoader";
 import AddProduct from "./Component/Tables/AddProduct";
 import HelpCenter from "./pages/Help Center/Help Center";
 import Chat from "./Component/Chat/Chat";
+
 
 function App() {
   return (
@@ -32,14 +32,13 @@ function App() {
         <Route path="/C" element={<Cards />} />
         <Route path="/Product" element={<ProductTable />} />
         <Route path="/AddProduct" element={<AddProduct />} />
-        <Route path="/Cateogry" element={<CateogriesTable />} />
         <Route path="/Setting" element={<Setting />} />
         <Route path="/Privacy" element={<Privacy />} />
         <Route path="/Users" element={<Users />} />
         <Route path="/CartService" element={<CartService />} />
         <Route path="/Order" element={<Order />} />
         <Route path="/loader" element={<DotsLoader />} />
-        <Route path="/Chat" element={<Chat />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/Help" element={<HelpCenter />} />
       </Routes>
     </>

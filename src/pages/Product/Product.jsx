@@ -1,47 +1,46 @@
-import Sidebar from "../../Component/Sidebar/Side";
-import Header from "../../Component/Header/Header";
-import Cards from "../../Component/Cards/Cards";
-import ProductTable from "../../Component/Tables/ProductTable"; // Import ProductTable
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import DotsLoader from "../../Component/DotsLoader/DotsLoader";
+import Sidebar from "../../Component/Sidebar/Side";
+import Header from "../../Component/Header/Header";
+import ProductTable from "../../Component/Tables/ProductTable"; // Import ProductTable
 import { getAllProducts } from "../../reduex/services/ProductServices/ProductService";
-import CategoriesTable from "../../Component/Tables/CateogriesTable";
 import AddProduct from "../../Component/Tables/AddProduct";
-
+import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
 
 export default function Product() {
   const dispatch = useDispatch();
   const { Products } = useSelector((state) => state.product); // Ensure the correct state path
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
       await dispatch(getAllProducts());
-      setLoading(false);
+      setIsLoading(false); // Set loading to false after fetching products
     };
 
     fetchProducts();
   }, [dispatch]);
 
-  if (loading) {
-    return <DotsLoader />;
+  if (isLoading) {
+    // Show the loader while fetching products
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotsLoader />
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex ">
       <div>
         <Sidebar />
       </div>
       <div className="w-full">
         <Header />
-        <Cards />
-<div className="p-5" >
-  <AddProduct/>
-        <CategoriesTable />
-          <ProductTable Products={Products} /> 
-          </div>
+        <div className="p-5">
+          <AddProduct />
+          <ProductTable Products={Products} />
+        </div>
       </div>
     </div>
   );

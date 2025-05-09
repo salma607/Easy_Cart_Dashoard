@@ -1,8 +1,21 @@
-import { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, IconButton, Tooltip } from '@mui/material';
+import { useState, useEffect } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  IconButton,
+  Tooltip,
+  TablePagination,
+} from '@mui/material';
 import { Cancel, CheckCircle, Star, StarHalf } from '@mui/icons-material';
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
+import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
 import 'tailwindcss/tailwind.css'; // Ensure Tailwind CSS is imported
 
 const initialOrdersData = [
@@ -36,7 +49,21 @@ const renderStars = (rate) => {
 };
 
 export default function Order() {
-  const [orders, setOrders] = useState(initialOrdersData);
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    // Simulate a delay to fetch orders
+    const fetchOrders = async () => {
+      setTimeout(() => {
+        setOrders(initialOrdersData);
+        setIsLoading(false); // Set loading to false after fetching data
+      }, 2000); // Simulated delay
+    };
+    fetchOrders();
+  }, []);
 
   const handleCancelOrder = (orderId) => {
     setOrders(orders.map(order => 
@@ -50,6 +77,23 @@ export default function Order() {
     ));
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotsLoader />
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen">
       <div>
@@ -58,10 +102,13 @@ export default function Order() {
       <div className="w-full flex flex-col">
         <Header />
         <div className="mt-8 p-4">
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ maxHeight: 700, overflow: 'auto' }}>
             <Table>
-              <TableHead sx={{ backgroundColor: "#76ab2f" }}>
-                <TableRow >
+              <TableHead sx={{ backgroundColor: "#76ab2f", top: 0, position: 'sticky', zIndex: 1,"& th": {
+                  color: "#fff",
+                  fontWeight: "bold",
+                }, }}>
+                <TableRow>
                   <TableCell>Order Date</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Order Code</TableCell>
@@ -75,59 +122,70 @@ export default function Order() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow 
-                    key={order.id}
-                    className={order.status === 'canceled' ? 'bg-red-100' : ''}
-                  >
-                    <TableCell>{order.date}</TableCell>
-                    <TableCell>{order.price}</TableCell>
-                    <TableCell>{order.code}</TableCell>
-                    <TableCell>
-                      {order.delivery === 'delivery' ? (
-                        order.status === 'checked' ? (
-                          <Chip label="Delivered" sx={{ backgroundColor: "#76ab2f", color: "white" }} />
+                {orders
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((order) => (
+                    <TableRow 
+                      key={order.id}
+                      className={order.status === 'canceled' ? 'bg-red-100' : ''}
+                    >
+                      <TableCell>{order.date}</TableCell>
+                      <TableCell>{order.price}</TableCell>
+                      <TableCell>{order.code}</TableCell>
+                      <TableCell>
+                        {order.delivery === 'delivery' ? (
+                          order.status === 'checked' ? (
+                            <Chip label="Delivered" sx={{ backgroundColor: "#76ab2f", color: "white" }} />
+                          ) : (
+                            <Chip label="Canceled" color="error" />
+                          )
                         ) : (
-                          <Chip label="Canceled" color="error" />
-                        )
-                      ) : (
-                        order.status === 'checked' ? (
-                          <Chip label="Checked" sx={{ backgroundColor: "#76ab2f", color: "white" }} />
-                        ) : (
-                          <Chip label="Canceled" color="error" />
-                        )
-                      )}
-                    </TableCell>
-                    <TableCell>{order.delivery}</TableCell>
-                    <TableCell>{order.email}</TableCell>
-                    <TableCell>{order.name}</TableCell>
-                    <TableCell>{order.weight}</TableCell>
-                    <TableCell>{renderStars(order.rate)}</TableCell>
-                    <TableCell>
-                      <Tooltip title="Cancel Order">
-                        <IconButton 
-                          onClick={() => handleCancelOrder(order.id)} 
-                          color="error"
-                          disabled={order.status === 'canceled'}
-                        >
-                          <Cancel />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Check Order">
-                        <IconButton 
-                          onClick={() => handleCheckOrder(order.id)} 
-                          sx={{ color: "#76ab2f" }}
-                          disabled={order.status === 'checked'}
-                        >
-                          <CheckCircle />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          order.status === 'checked' ? (
+                            <Chip label="Checked" sx={{ backgroundColor: "#76ab2f", color: "white" }} />
+                          ) : (
+                            <Chip label="Canceled" color="error" />
+                          )
+                        )}
+                      </TableCell>
+                      <TableCell>{order.delivery}</TableCell>
+                      <TableCell>{order.email}</TableCell>
+                      <TableCell>{order.name}</TableCell>
+                      <TableCell>{order.weight}</TableCell>
+                      <TableCell>{renderStars(order.rate)}</TableCell>
+                      <TableCell>
+                        <Tooltip title="Cancel Order">
+                          <IconButton 
+                            onClick={() => handleCancelOrder(order.id)} 
+                            color="error"
+                            disabled={order.status === 'canceled'}
+                          >
+                            <Cancel />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Check Order">
+                          <IconButton 
+                            onClick={() => handleCheckOrder(order.id)} 
+                            sx={{ color: "#76ab2f" }}
+                            disabled={order.status === 'checked'}
+                          >
+                            <CheckCircle />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={orders.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,6 +9,7 @@ import {
 import { Add } from "@mui/icons-material";
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
+import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
 
 // Constant styles for reusability
 const buttonStyles = {
@@ -57,16 +58,36 @@ const textFieldStyles = {
 export default function Privacy() {
   const [isEditable, setIsEditable] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const [formData, setFormData] = useState({
-    firstName: "Salma",
-    secondName: "Ahmed Mohamed",
-    password: "$alma12345",
-    phoneNumber: "01025011729",
-    email: "salma25102001@gmail.com",
-    address: "Nasr City",
-    postcode: "1123",
+    firstName: "",
+    secondName: "",
+    password: "",
+    phoneNumber: "",
+    email: "",
+    address: "",
+    postcode: "",
   });
+
+  useEffect(() => {
+    // Simulate fetching profile data
+    const fetchProfileData = async () => {
+      setTimeout(() => {
+        setFormData({
+          firstName: "Salma",
+          secondName: "Ahmed Mohamed",
+          password: "$alma12345",
+          phoneNumber: "01025011729",
+          email: "salma25102001@gmail.com",
+          address: "Nasr City",
+          postcode: "1123",
+        });
+        setIsLoading(false); // Set loading to false after fetching data
+      }, 2000); // Simulated delay
+    };
+    fetchProfileData();
+  }, []);
 
   const handleEditClick = () => {
     setIsEditable(true);
@@ -96,6 +117,15 @@ export default function Privacy() {
     // Save the form data here
     setIsEditable(false);
   };
+
+  if (isLoading) {
+    // Show loader while fetching profile data
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotsLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">

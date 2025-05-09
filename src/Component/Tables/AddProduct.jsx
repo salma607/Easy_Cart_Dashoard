@@ -14,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import axios from "axios"; // Import axios for API calls
 
-export default function AddProduct() {
+export default function AddProduct({ onProductAdded }) {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [setOpenFilterDialog] = useState(false); // Fixed destructuring
   const [loading, setLoading] = useState(false); // State to manage loading
@@ -25,6 +25,7 @@ export default function AddProduct() {
     ProductName: "",
     ProductPrice: "",
     ProductWeight: "",
+    ProductWeightUnit: "Kg", // Default unit
     ProductBrand: "",
     ProductPlace: "",
     ProductAvailable: "Yes",
@@ -83,13 +84,10 @@ export default function AddProduct() {
       // Log the product data before sending the request
       console.log("Request payload:", newProduct);
 
-      // Wrap the product data in a list
-      const productData = [newProduct];
-
       // Make POST request to the online API
       const response = await axios.post(
         "https://shehab123.pythonanywhere.com/product/add/",
-        productData, // Send as a list of products
+        newProduct, // Send as a dictionary (not a list)
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -101,17 +99,28 @@ export default function AddProduct() {
       if (response.status === 201) {
         console.log("Product added successfully:", response.data);
 
+        // Notify the parent component about the new product
+        if (onProductAdded) {
+          onProductAdded(response.data);
+        }
+
         // Reset form after success
         setNewProduct({
           QRNumber: "",
           ProductName: "",
           ProductPrice: "",
           ProductWeight: "",
+          ProductWeightUnit: "Kg", // Reset to default unit
           ProductBrand: "",
-          ProductRate: "",
           ProductPlace: "",
-          ProductAvailable: "",
+          ProductAvailable: "Yes",
+          ProductQuantity: 10,
           ProductCategory: "",
+          ProductSupplier: "no",
+          ProductDescription: "no",
+          ProductBoycott: false,
+          ProductTotalRate: "",
+          ProductFasting: "no",
         });
 
         setOpenAddDialog(false); // Close dialog
@@ -186,28 +195,55 @@ export default function AddProduct() {
             }
             {...textFieldSx}
           />
+          <Box display="flex" alignItems="center" gap={2} marginY={1}>
+            <TextField
+              label="Product Weight"
+              type="number"
+              value={newProduct.ProductWeight}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  ProductWeight: e.target.value,
+                })
+              }
+              {...textFieldSx}
+              sx={{ width: "60%" }}
+            />
+            <TextField
+              select
+              label="Unit"
+              value={newProduct.ProductWeightUnit}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  ProductWeightUnit: e.target.value,
+                })
+              }
+              sx={{ width: "35%" }}
+            >
+              <MenuItem value="Kg">Kg</MenuItem>
+              <MenuItem value="g">g</MenuItem>
+            </TextField>
+          </Box>
           <TextField
             margin="dense"
-            label="Product Weight"
-            type="number"
-            value={newProduct.ProductWeight}
-            onChange={(e) =>
-              setNewProduct({
-                ...newProduct,
-                ProductWeight: e.target.value,
-              })
-            }
-            {...textFieldSx}
-          />
-          <TextField
-            margin="dense"
-            label=" Product Category"
+            label="Product Category"
+            select
             value={newProduct.ProductCategory}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductCategory: e.target.value })
             }
             {...textFieldSx}
-          />
+          >
+            <MenuItem value="Fruits">Fruits</MenuItem>
+            <MenuItem value="Vegetables">Vegetables</MenuItem>
+            <MenuItem value="Dairy">Dairy</MenuItem>
+            <MenuItem value="Meat & Chicken">Meat & Chicken</MenuItem>
+            <MenuItem value="Electronics">Electronics</MenuItem>
+            <MenuItem value="Healthcare">Healthcare</MenuItem>
+            <MenuItem value="Bakery">Bakery</MenuItem>
+          </TextField>
+
           <TextField
             margin="dense"
             label="Product Brand"

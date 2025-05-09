@@ -13,6 +13,8 @@ import axios from "axios";
 
 const iconSize = 120; // Define a constant size for the icons
 
+const API_URL = "https://shehab123.pythonanywhere.com/product/statistics/";
+
 export default function Cards() {
   const [stats, setStats] = useState({
     Categories: 0,
@@ -24,33 +26,46 @@ export default function Cards() {
     Orders: 0,
   });
 
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(""); // Error state
+
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
+        setLoading(true); // Start loading
+        setError(""); // Clear previous errors
+
         const token = localStorage.getItem("token");
         if (!token) {
-          console.warn("No token found in localStorage.");
+          setError("No token found. Please log in.");
           return;
         }
 
-        const response = await axios.get(
-          `https://shehab123.pythonanywhere.com/product/statistics`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(API_URL, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setStats(response.data);
-        // Update loading state to false after data is fetched
       } catch (error) {
-        console.error("Failed to fetch statistics:", error);
+        setError("");
+        console.error("", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchStatistics();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading spinner or message
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Show error message
+  }
 
   return (
     <div className="flex justify-center items-center m-2">
@@ -130,6 +145,7 @@ export default function Cards() {
             </CardContent>
           </CardActionArea>
         </Card>
+
         <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <MonetizationOnRoundedIcon
@@ -143,11 +159,12 @@ export default function Cards() {
                 variant="body2"
                 sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
               >
-                {stats.Feedback}
+                {stats.Revenue}
               </Typography>
             </CardContent>
           </CardActionArea>
         </Card>
+
         <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <Inventory2RoundedIcon

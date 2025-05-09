@@ -36,7 +36,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-screen">
       {/* Sidebar Toggle Button */}
       <IconButton
         sx={{

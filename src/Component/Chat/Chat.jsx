@@ -1,139 +1,49 @@
-import { useState } from "react";
-import { FaPaperPlane, FaImage, FaSearch } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import {
-  IconButton,
   Menu,
   MenuItem,
   TextField,
   Box,
   Typography,
-  Button,
   Grid,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from "@mui/material";
+import { FaSearch } from "react-icons/fa";
 import { FilterList } from "@mui/icons-material";
+import { sxStyles, initialChats } from "../Chat/Component/constants";
+import DotsLoader from "../../Component/DotsLoader/DotsLoader"; 
+import ComponentChat from "../Chat/Component/ChatComponent";
 
-const sxStyles = {
-  container: {
-    bgcolor: "white",
-    border: "3px solid",
-    borderColor: "#f7fee7",
-    borderRadius: 2,
-    p: 2,
-    height: "100%",
-    overflowY: "auto",
-  },
-  chatListItem: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    padding: 2,
-    borderRadius: 3,
-    cursor: "pointer",
-    "&:hover": {
-      bgcolor: "#f7fee7",
-    },
-  },
-  chatListItemText: {
-    fontWeight: 800,
-    color: "#76ab2f",
-    fontSize: { xs: "16px", sm: "20px", md: "25px" },
-  },
-  chatListPreview: {
-    fontSize: { xs: "12px", sm: "16px", md: "20px" },
-    color: "grey.600",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-  chatWindow: {
-    flex: 1,
-    padding: 2,
-    bgcolor: "white",
-    border: "1px solid",
-    borderColor: "#f7fee7",
-    overflowY: "auto",
-  },
-  fixedHeader: {
-    bgcolor: "#76ab2f",
-    color: "white",
-    p: 2,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    boxShadow: 1,
-    borderRadius: 1,
-    position: "sticky",
-    top: 0,
-    zIndex: 10,
-  },
-
-  inputField: {
-    flex: 1,
-    borderRadius: 1,
-  },
-  noMessagesText: {
-    color: "grey.500",
-    textAlign: "center",
-  },
-  unreadIndicator: {
-    width: 8,
-    height: 8,
-    bgcolor: "green.500",
-    borderRadius: "50%",
-  },
-  Textfield:{
-    margin: 2,
-    "& .MuiOutlinedInput-root": {
-      borderRadius: 1,
-      "& fieldset": {
-        borderColor: "#e0e0e0",
-      },
-      "&:hover fieldset": {
-        borderColor: "#76ab2f",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "#76ab2f",
-      },
-    },
-    
-  },
-  typingFooter: {
-    position: "sticky",
-    bottom: 0,
-    bgcolor: "white",
-    height: 60,
-    p: 2,
-    borderTop: "1px solid #f7fee7",
-    display: "flex",
-    alignItems: "center",
-    gap: 1,
-    zIndex: 10,
-  },
-};
 
 export default function Chat() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [chats, setChats] = useState([
-    {
-      id: "Easycart001",
-      message: "Hello, I have an issue with my cart.",
-      unread: true,
-      favourite: false,
-    },
-  ]);
-
+  const [chats, setChats] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
-  const [newMessage, setNewMessage] = useState("");
-  const [image, setImage] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [chatSearchTerm, setChatSearchTerm] = useState("");
   const [anchorElSearch, setAnchorElSearch] = useState(null);
   const [anchorElFilter, setAnchorElFilter] = useState(null);
+
+  // Add states for ComponentChat props
+  const [newMessage, setNewMessage] = useState(""); // State for the new message
+  const [recording, setRecording] = useState(false); // State for recording status
+
+  useEffect(() => {
+    // Simulate fetching chat data
+    const fetchChats = async () => {
+      setTimeout(() => {
+        setChats(initialChats);
+        setIsLoading(false); // Set loading to false after fetching chats
+      }, 2000); // Simulated delay
+    };
+    fetchChats();
+  }, []);
 
   const handleSearchMenuOpen = (event) =>
     setAnchorElSearch(event.currentTarget);
@@ -150,25 +60,35 @@ export default function Chat() {
     setChatSearchTerm("");
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) setImage(URL.createObjectURL(file));
-  };
-
+  // Add functions for ComponentChat props
   const handleSendMessage = () => {
-    if ((newMessage.trim() || image) && selectedChat) {
-      const newContent = image
-        ? `${selectedChat.message}\n[Image: ${image}]`
-        : `${selectedChat.message}\n${newMessage}`;
-
+    if (newMessage.trim() && selectedChat) {
+      // Update the selected chat with the new message
       setChats((prevChats) =>
         prevChats.map((chat) =>
-          chat.id === selectedChat.id ? { ...chat, message: newContent } : chat
+          chat.id === selectedChat.id
+            ? { ...chat, message: `${chat.message}\n${newMessage.trim()}` }
+            : chat
         )
       );
-      setNewMessage("");
-      setImage(null);
+      setNewMessage(""); // Clear the input field after sending
     }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      console.log("Image uploaded:", file); // Replace this with actual upload logic
+    }
+  };
+
+  const startRecording = () => {
+    setRecording(true);
+    console.log("Recording started...");
+    setTimeout(() => {
+      setRecording(false);
+      console.log("Recording stopped.");
+    }, 5000); // Simulate 5 seconds of recording
   };
 
   const filteredChats = chats.filter((chat) => {
@@ -191,6 +111,15 @@ export default function Chat() {
           line.toLowerCase().includes(chatSearchTerm.toLowerCase())
         )
     : [];
+
+  if (isLoading) {
+    // Show loader while chats are loading
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <DotsLoader />
+      </div>
+    );
+  }
 
   return (
     <Grid container sx={{ height: "100vh", bgcolor: "grey.100" }}>
@@ -244,14 +173,22 @@ export default function Chat() {
                 onClick={() => handleChatSelect(chat)}
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  {chat.unread && <Box sx={sxStyles.unreadIndicator}></Box>}
+                  {chat.unread && (
+                    <Box
+                      sx={{
+                        ...sxStyles.unreadIndicator,
+                        backgroundColor: "#76ab2f",
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        marginRight: 1,
+                      }}
+                    ></Box>
+                  )}
                   <Typography sx={sxStyles.chatListItemText}>
                     {chat.id}
                   </Typography>
                 </Box>
-                <Typography sx={sxStyles.chatListPreview}>
-                  {chat.message}
-                </Typography>
               </Box>
             ))}
           </Box>
@@ -311,6 +248,13 @@ export default function Chat() {
                         maxWidth: "100%",
                       }}
                     />
+                  ) : line.startsWith("[Audio:") ? (
+                    <audio
+                      key={index}
+                      controls
+                      src={line.replace("[Audio: ", "").replace("]", "")}
+                      style={{ marginBottom: "8px" }}
+                    />
                   ) : (
                     <Typography key={index} sx={{ color: "grey.700" }}>
                       {line}
@@ -324,41 +268,15 @@ export default function Chat() {
               )}
             </Box>
 
-            <Box sx={sxStyles.typingFooter}>
-              <TextField
-                variant="outlined"
-                size="small"
-                fullWidth
-                placeholder="Type your message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    border: "none",
-                    "& fieldset": {
-                      border: "none",
-                    },
-                  },
-                }}
-              />
-              <label>
-                <FaImage />
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageUpload}
-                />
-              </label>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSendMessage}
-                startIcon={<FaPaperPlane />}
-              >
-                Send
-              </Button>
-            </Box>
+            {/* Pass props to ComponentChat */}
+            <ComponentChat
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              handleSendMessage={handleSendMessage}
+              handleImageUpload={handleImageUpload}
+              startRecording={startRecording}
+              recording={recording}
+            />
           </>
         ) : (
           <Typography
