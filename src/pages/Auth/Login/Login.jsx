@@ -11,11 +11,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import { loginUser } from "../../../redux/services/AuthService";
-
-
-
+import foodImage from "/src/assets/food.png"; // Import the image here
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,11 +22,6 @@ export default function Login() {
   const { isLoading, error, isAuthenticated } = useSelector(
     (state) => state.auth
   );
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated, navigate]);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -45,9 +38,9 @@ export default function Login() {
 
   return (
     <div className="p-8 bg-[#7fb833]">
-      <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg"> 
+      <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg">
         <div className="w-full">
-          <img src="/src/assets/food.png" className="w-full" />
+          <img src={foodImage} className="w-full" alt="Food" /> {/* Use the imported image */}
         </div>
         <div className="bg-white w-full flex flex-col justify-center items-center rounded-r-lg">
           <div>
