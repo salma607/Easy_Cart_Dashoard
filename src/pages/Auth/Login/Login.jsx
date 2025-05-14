@@ -11,29 +11,43 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../../redux/services/AuthService";
+
 import foodImage from "/src/assets/food.png"; // Import the image here
+import { loginUser } from "../../../redux/services/AuthService";
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, error, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
 
+  // Accessing Redux state
+  const { isLoading, error } = useSelector((state) => state.auth);
+
+  // Local state for form inputs
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Toggle password visibility
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  // Form submission handler
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Basic validation
     if (!username || !password) return;
+
+    // Dispatch the login service
     dispatch(loginUser({ username, password }));
-    navigate("/Home");
+
+    // Check if the token exists in local storage and redirect
+    if (localStorage.getItem("token")) {
+      navigate("/Home");
+    }
   };
-  const [username, setusername] = useState("");
-  const [password, setPassword] = useState("");
 
   return (
     <div className="p-8 sm:p-4 bg-[#7fb833]">
@@ -45,7 +59,7 @@ export default function Login() {
             alt="Food"
           /> {/* Responsive image */}
         </div>
-        <div className="bg-white w-full flex flex-col justify-center items-center rounded-r-lg p-8 sm:p-4">
+        <div className="bg-white w-full flex flex-col justify-center items-center p-8 sm:p-4">
           <div>
             <ShoppingCartIcon
               sx={{ fontSize: { xs: 80, lg: 140 }, color: "#76ab2f" }}
@@ -66,7 +80,7 @@ export default function Login() {
                   variant="outlined"
                   color="#e0e0e0"
                   value={username}
-                  onChange={(e) => setusername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": { borderColor: "#e0e0e0" },
@@ -116,7 +130,7 @@ export default function Login() {
                   sx={{ backgroundColor: "#76ab2f" }}
                   className="max-w-md w-full" /* Medium width */
                 >
-                  {isLoading ? "loading..." : "Login"}
+                  {isLoading ? "Loading..." : "Login"}
                 </Button>
                 {error && <p className="text-red-500">{error}</p>}
               </div>

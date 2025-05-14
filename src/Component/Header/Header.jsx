@@ -7,7 +7,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Avatar from "@mui/material/Avatar"; // Example for Material-UI Avatar
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import Button from "@mui/material/Button";
-
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate and Link
 
 export default function Header() {
@@ -21,6 +20,10 @@ export default function Header() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+   const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   const notifications = ["Notification 1", "Notification 2", "Notification 3"];
@@ -108,7 +111,7 @@ export default function Header() {
               Profile
             </MenuItem>
             <MenuItem
-              onClick={() => navigate("/")} // Navigate to /login on click
+              onClick={handleLogout} // Navigate to /login on click
             >
               Logout
             </MenuItem>

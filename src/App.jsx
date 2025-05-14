@@ -1,4 +1,4 @@
-import Loginform from "./pages/Auth/Login/Login";
+
 import Home from "./pages/Home/Home";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -17,13 +17,14 @@ import DotsLoader from "./Component/DotsLoader/DotsLoader";
 import AddProduct from "./Component/Tables/AddProduct";
 import HelpCenter from "./pages/Help Center/Help Center";
 import Chat from "./Component/Chat/Chat";
+import Login from "./pages/Auth/Login/Login";
 
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Loginform />} />
+        <Route path="/" element={<Login />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/S" element={<Sidebar />} />
         <Route path="/H" element={<Header />} />
