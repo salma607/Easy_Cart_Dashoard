@@ -28,7 +28,7 @@ export default function Piechart() {
         );
 
         if (!response.ok) {
-          setError("");
+          setError("Failed to fetch data. Please try again later.");
           setLoading(false);
           return;
         }
@@ -45,7 +45,7 @@ export default function Piechart() {
         );
         setError(null);
       } catch {
-        setError("");
+        setError("An error occurred. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -72,11 +72,11 @@ export default function Piechart() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center p-4">
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500 text-center">{error}</p>
       ) : pieChartData.length > 0 ? (
         <>
           <PieChart
@@ -86,9 +86,9 @@ export default function Piechart() {
                 colorField: "color", // Use the color field for the slices
               },
             ]}
-            width={400}
-            height={400}
-            margin={{ top: 10, right: 180, bottom: 0, left: 10 }}
+            width={Math.min(window.innerWidth - 40, 400)} // Adjust width for mobile
+            height={Math.min(window.innerWidth - 40, 400)} // Adjust height for mobile
+            margin={{ top: 10, right: 20, bottom: 10, left: 20 }} // Adjust margins for smaller screens
           />
         </>
       ) : (

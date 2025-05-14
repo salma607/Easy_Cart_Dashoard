@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 
-const barChartMargin = { top: 40, bottom: 30, left: 40, right: 10 };
-
 export default function Bar() {
   const [barChartXAxis, setBarChartXAxis] = useState([]);
   const [barChartSeries, setBarChartSeries] = useState([]);
@@ -21,8 +19,8 @@ export default function Bar() {
           return;
         }
       } catch (err) {
-        console.error("", err);
-        setError("");
+        console.error("Error retrieving token", err);
+        setError("Error retrieving token");
         return;
       }
 
@@ -42,7 +40,7 @@ export default function Bar() {
 
         if (!response.ok) {
           console.error(`Failed to fetch data: ${response.statusText}`);
-          setError("");
+          setError("Failed to fetch data. Please try again later.");
           return;
         }
 
@@ -66,8 +64,8 @@ export default function Bar() {
         );
         setError(null);
       } catch (err) {
-        console.error("", err);
-        setError("");
+        console.error("Error fetching data", err);
+        setError("Error fetching data. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -85,13 +83,19 @@ export default function Bar() {
   }
 
   return (
-    <div className="m-5 p-6 ">
+    <div className="m-5 p-4">
       <BarChart
         series={barChartSeries}
         xAxis={barChartXAxis}
         dataset={dataset}
-        height={290}
-        margin={barChartMargin}
+        height={Math.min(window.innerWidth * 0.7, 300)} // Adjust height for mobile
+        width={Math.min(window.innerWidth - 20, 500)} // Adjust width for mobile
+        margin={{
+          top: 20,
+          bottom: 30,
+          left: 20,
+          right: 10,
+        }} // Adjust margins for better spacing
       />
     </div>
   );

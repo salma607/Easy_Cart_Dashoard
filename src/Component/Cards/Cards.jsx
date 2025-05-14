@@ -11,7 +11,7 @@ import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const iconSize = 120; // Define a constant size for the icons
+const iconSize = 80; // Adjust icon size for better responsiveness
 
 const API_URL = "https://shehab123.pythonanywhere.com/product/statistics/";
 
@@ -24,6 +24,7 @@ export default function Cards() {
     Feedback: 0,
     Carts: 0,
     Orders: 0,
+    Revenue: 0,
   });
 
   const [loading, setLoading] = useState(true); // Loading state
@@ -49,8 +50,8 @@ export default function Cards() {
 
         setStats(response.data);
       } catch (error) {
-        setError("");
-        console.error("", error);
+        setError("Failed to fetch data. Please try again.");
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false); // Stop loading
       }
@@ -69,19 +70,19 @@ export default function Cards() {
 
   return (
     <div className="flex justify-center items-center m-2">
-      <div className="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 m-10 gap-20">
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 p-4">
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <TextsmsOutlinedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Feedback
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Feedback}
               </Typography>
@@ -89,18 +90,18 @@ export default function Cards() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <TrendingUpRoundedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Rates
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Rates}
               </Typography>
@@ -108,18 +109,18 @@ export default function Cards() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <ShoppingCartCheckoutRoundedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Carts
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Carts}
               </Typography>
@@ -127,18 +128,18 @@ export default function Cards() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <PeopleAltRoundedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Customers
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Customers}
               </Typography>
@@ -146,18 +147,18 @@ export default function Cards() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <MonetizationOnRoundedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Revenue
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Revenue}
               </Typography>
@@ -165,18 +166,18 @@ export default function Cards() {
           </CardActionArea>
         </Card>
 
-        <Card sx={{ maxWidth: 150, border: "2px solid #e7e5e4" }}>
+        <Card sx={{ border: "2px solid #e7e5e4" }}>
           <CardActionArea>
             <Inventory2RoundedIcon
               sx={{ fontSize: iconSize, color: "#76ab2f" }}
             />
             <CardContent sx={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 Orders
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: "black", fontWeight: "bold", fontSize: "20px" }}
+                sx={{ color: "black", fontWeight: "bold", fontSize: "18px" }}
               >
                 {stats.Orders}
               </Typography>
