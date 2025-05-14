@@ -11,7 +11,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { loginUser } from "../../../redux/services/AuthService";
 import foodImage from "/src/assets/food.png"; // Import the image here
 
@@ -37,23 +36,29 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="p-8 bg-[#7fb833]">
+    <div className="p-8 sm:p-4 bg-[#7fb833]">
       <div className="grid lg:grid-cols-2 grid-cols-1 shadow-lg">
         <div className="w-full">
-          <img src={foodImage} className="w-full" alt="Food" /> {/* Use the imported image */}
+          <img
+            src={foodImage}
+            className="w-full h-auto object-cover"
+            alt="Food"
+          /> {/* Responsive image */}
         </div>
-        <div className="bg-white w-full flex flex-col justify-center items-center rounded-r-lg">
+        <div className="bg-white w-full flex flex-col justify-center items-center rounded-r-lg p-8 sm:p-4">
           <div>
-            <ShoppingCartIcon sx={{ fontSize: 140, color: "#76ab2f" }} />
+            <ShoppingCartIcon
+              sx={{ fontSize: { xs: 80, lg: 140 }, color: "#76ab2f" }}
+            />
           </div>
-          <div className="lg:text-[90px] text-[40px] font-bold text-[#000000]">
-            <h1 className="text-3xl font-bold justify-center items-center m-5">
+          <div className="lg:text-[90px] text-[40px] sm:text-[30px] font-bold text-[#000000] text-center">
+            <h1 className="text-3xl sm:text-lg font-bold justify-center items-center m-5">
               Sign in to your account
             </h1>
           </div>
           <div className="rest-data w-full space-y-3 flex flex-col justify-center items-center">
-            <form className="signup-form" onSubmit={handleSubmit}>
-              <div className="rest-data space-y-6 flex flex-col justify-center items-center">
+            <form className="signup-form w-full" onSubmit={handleSubmit}>
+              <div className="rest-data space-y-6 flex flex-col justify-center items-center w-full">
                 <TextField
                   id="outlined-username"
                   label="Username"
@@ -64,36 +69,24 @@ export default function Login() {
                   onChange={(e) => setusername(e.target.value)}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#e0e0e0",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#76ab2f",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#76ab2f",
-                      },
+                      "& fieldset": { borderColor: "#e0e0e0" },
+                      "&:hover fieldset": { borderColor: "#76ab2f" },
+                      "&.Mui-focused fieldset": { borderColor: "#76ab2f" },
                     },
-                    width: "400px",
                   }}
+                  className="max-w-md w-full" /* Medium width */
                 />
 
                 <FormControl
                   variant="outlined"
                   color="#e0e0e0"
+                  className="max-w-md w-full" /* Medium width */
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#e0e0e0",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#76ab2f",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#76ab2f",
-                      },
+                      "& fieldset": { borderColor: "#e0e0e0" },
+                      "&:hover fieldset": { borderColor: "#76ab2f" },
+                      "&.Mui-focused fieldset": { borderColor: "#76ab2f" },
                     },
-                    width: "400px",
                   }}
                 >
                   <InputLabel htmlFor="outlined-password">Password</InputLabel>
@@ -120,11 +113,12 @@ export default function Login() {
                   type="submit"
                   variant="contained"
                   disableElevation
-                  sx={{ width: "50%", backgroundColor: "#76ab2f" }}
+                  sx={{ backgroundColor: "#76ab2f" }}
+                  className="max-w-md w-full" /* Medium width */
                 >
                   {isLoading ? "loading..." : "Login"}
                 </Button>
-                {error && <p>{error}</p>}
+                {error && <p className="text-red-500">{error}</p>}
               </div>
             </form>
           </div>
