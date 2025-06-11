@@ -1,23 +1,66 @@
 import { ScatterChart } from "@mui/x-charts/ScatterChart";
+import { useEffect, useState } from "react";
 
 export default function Scatter() {
-  // Responsive chart settings
+  const [chartDimensions, setChartDimensions] = useState({
+    height: 300, // Match the height of the Line chart
+    width: 380, // Adjusted width for better balance
+  });
+
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      if (window.innerWidth < 600) {
+        setChartDimensions({
+          height: 300, // Consistent height with Line chart for mobile
+          width: Math.min(window.innerWidth - 40, 380), // Adjust width for mobile, with a max of 380px
+        });
+      } else {
+        setChartDimensions({
+          height: 300, // Consistent height with Line chart
+          width: 380, // Adjusted width for desktop
+        });
+      }
+    };
+
+    // Update dimensions on initial render and window resize
+    updateChartDimensions();
+    window.addEventListener("resize", updateChartDimensions);
+
+    return () => {
+      window.removeEventListener("resize", updateChartDimensions);
+    };
+  }, []);
+
   const chartSetting = {
     yAxis: [
       {
         label: "Rating",
-        width: 60,
+        width: 50, // Reduced width for the y-axis to match Line chart
         min: 0,
         max: 5,
+        labelFontSize: "12px", // Match the font size of Line chart
+        tickFontSize: "10px", // Match the tick font size of Line chart
       },
     ],
     xAxis: [
       {
         label: "Price / Reviews",
+        labelFontSize: "12px", // Match the font size of Line chart
+        tickFontSize: "10px", // Match the tick font size of Line chart
       },
     ],
-    height: window.innerWidth < 600 ? 300 : 400, // Adjust height for smaller screens
-    width: window.innerWidth < 600 ? window.innerWidth - 20 : 600, // Adjust width for smaller screens
+    ...chartDimensions, // Dynamically set height and width
+    margin: {
+      top: 10,
+      right: 10,
+      bottom: 50, // Match the bottom margin of Line chart
+      left: 50, // Match the left margin of Line chart
+    },
+    legend: {
+      position: "bottom", // Position legend at the bottom to match visual balance
+      fontSize: "12px", // Match the font size of Line chart
+      spacing: 5, // Adjust spacing between legend items
+    },
   };
 
   return (

@@ -86,10 +86,13 @@ export default function Piechart() {
                 colorField: "color", // Use the color field for the slices
               },
             ]}
-            width={Math.min(window.innerWidth - 40, 400)} // Adjust width for mobile
-            height={Math.min(window.innerWidth - 40, 400)} // Adjust height for mobile
-            margin={{ top: 10, right: 20, bottom: 10, left: 20 }} // Adjust margins for smaller screens
+            width={Math.min(window.innerWidth - 80, 300)} // Adjust width for mobile (max 300px)
+            height={Math.min(window.innerWidth - 80, 300)} // Adjust height for mobile (max 300px)
+            margin={{ top: 10, right: 10, bottom: 10, left: 10 }} // Reduced margins for compact display
           />
+          <p className="text-sm text-center mt-3">
+            Product Category Pie Chart
+          </p>
         </>
       ) : (
         <p className="text-center text-lg mt-2">No data available</p>

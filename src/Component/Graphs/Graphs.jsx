@@ -12,38 +12,52 @@ export default function Graphs() {
     { id: 4, component: <Bar />, title: "Category Data Visualization/month" },
   ];
 
-  const [currentGraphIndex, setCurrentGraphIndex] = useState(0);
+  // State to track window width (for responsive rendering)
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Listen for window resize (no useEffect; set handler directly)
+  if (typeof window !== "undefined") {
+    window.onresize = () => {
+      setWindowWidth(window.innerWidth);
+      setCurrentPage(0); // Optionally reset to first page when switching layout
+    };
+  }
+
+  const isMobile = windowWidth < 768;
+  const pageSize = isMobile ? 1 : 2;
+  const totalPages = Math.ceil(graphs.length / pageSize);
 
   const handleNext = () => {
-    setCurrentGraphIndex((prevIndex) =>
-      (prevIndex + 2) % graphs.length
-    );
+    setCurrentPage((prevPage) => (prevPage + 1) % totalPages);
   };
 
   const handlePrevious = () => {
-    setCurrentGraphIndex((prevIndex) =>
-      (prevIndex - 2 + graphs.length) % graphs.length
-    );
+    setCurrentPage((prevPage) => (prevPage - 1 + totalPages) % totalPages);
   };
+
+  const startIdx = currentPage * pageSize;
+  const currentGraphs = graphs.slice(startIdx, startIdx + pageSize);
 
   return (
     <div className="m-5 p-6 border-2 border-stone-200 rounded-md shadow-xl bg-white">
       {/* Display the current graphs */}
       <div className="mb-4 text-center">
-        {/* Display two graphs at a time */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col items-center">
-            <h2 className="text-lg md:text-xl mb-4 font-bold text-center">
-              {graphs[currentGraphIndex].title}
-            </h2>
-            <div className="w-full max-w-xs md:max-w-md">{graphs[currentGraphIndex].component}</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <h2 className="text-lg md:text-xl mb-4 font-bold text-center">
-              {graphs[(currentGraphIndex + 1) % graphs.length].title}
-            </h2>
-            <div className="w-full max-w-xs md:max-w-md">{graphs[(currentGraphIndex + 1) % graphs.length].component}</div>
-          </div>
+        <div
+          className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-6`}
+        >
+          {currentGraphs.map((graph) => (
+            <div key={graph.id} className="flex flex-col items-center">
+              <h2 className="text-lg md:text-xl mb-4 font-bold text-center">
+                {graph.title}
+              </h2>
+              <div className="w-full max-w-xs md:max-w-md">
+                {graph.component}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -55,6 +69,9 @@ export default function Graphs() {
         >
           Previous
         </button>
+        <div className="flex items-center justify-center text-sm md:text-base">
+          Page {currentPage + 1} of {totalPages}
+        </div>
         <button
           onClick={handleNext}
           className="px-4 py-2 bg-gray-200 rounded-md shadow hover:bg-gray-300 text-sm md:text-base"
