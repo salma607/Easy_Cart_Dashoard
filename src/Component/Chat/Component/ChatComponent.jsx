@@ -1,89 +1,139 @@
-import { TextField, IconButton, Button, Box } from "@mui/material";
+import { useState, useRef } from "react";
+import { Box, IconButton, InputBase } from "@mui/material";
 import { FaPaperPlane, FaImage, FaMicrophone } from "react-icons/fa";
 
 export default function ComponentChat() {
-  const newMessage = "";
-  const setNewMessage = () => {};
-  const handleSendMessage = () => {};
-  const handleImageUpload = () => {};
-  const startRecording = () => {};
-  const recording = false;
+  const [newMessage, setNewMessage] = useState("");
+  const [recording, setRecording] = useState(false);
+  const recognitionRef = useRef(null);
+
+  // Handle sending the message
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "") return;
+    alert("Message sent: " + newMessage);
+    setNewMessage("");
+  };
+
+  // Handle image upload (placeholder)
+  const handleImageUpload = () => {
+    alert("Image upload not implemented");
+  };
+
+  // Voice recording (simplified, see previous code for details)
+  const startRecording = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech Recognition is not supported in this browser.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setRecording(true);
+    recognition.onend = () => setRecording(false);
+    recognition.onerror = (event) => {
+      setRecording(false);
+      alert("Speech recognition error: " + event.error);
+    };
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setNewMessage((prev) => (prev ? prev + " " : "") + transcript);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  // Send on Enter
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" }, // Stack vertically on mobile, horizontally on larger screens
-        alignItems: "center",
-        gap: 1,
-        p: 2,
-        borderTop: "1px solid #e0e0e0",
         width: "100%",
+        backgroundColor: "#f7f7f7",
+        padding: "0 0 0 0",
+        borderTop: "1px solid #ececec",
+        display: "flex",
+        alignItems: "center",
+        minHeight: 56,
       }}
     >
-      {/* Input field for typing a message */}
-      <TextField
-        variant="outlined"
-        size="small"
-        fullWidth
+      {/* Message Input */}
+      <InputBase
         placeholder="Type your message..."
-        value={newMessage} // Controlled input value
-        onChange={(e) => setNewMessage(e.target.value)} // Update the message state
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
         sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-            "& fieldset": {
-              border: "none",
-            },
+          flex: 1,
+          px: 3,
+          py: 1.5,
+          fontSize: 16,
+          background: "transparent",
+          border: "none",
+          outline: "none",
+        }}
+        inputProps={{
+          style: {
+            background: "transparent",
+            border: "none",
+            outline: "none",
           },
         }}
       />
 
+      {/* Icons */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 1,
-          width: "100%",
-          mt: { xs: 2, sm: 0 }, // Add margin on top for mobile
+          gap: 1.5,
+          pr: 3,
         }}
       >
         {/* Image upload button */}
         <label>
-          <IconButton component="span">
+          <IconButton component="span" sx={{ color: "#444", p: 1 }}>
             <FaImage />
           </IconButton>
           <input
             type="file"
             accept="image/*"
             hidden
-            onChange={handleImageUpload} // Handle image upload
+            onChange={handleImageUpload}
           />
         </label>
 
         {/* Voice recording button */}
         <IconButton
-          onClick={startRecording} // Start recording when clicked
-          sx={{ color: recording ? "red" : "inherit" }} // Change color if recording
+          onClick={startRecording}
+          sx={{
+            color: recording ? "red" : "#222",
+            p: 1,
+          }}
         >
           <FaMicrophone />
         </IconButton>
 
-        {/* Send button */}
-        <Button
-          variant="contained"
-          onClick={handleSendMessage} // Handle sending the message
-          startIcon={<FaPaperPlane />}
+        {/* Send icon */}
+        <IconButton
+          onClick={handleSendMessage}
           sx={{
-            backgroundColor: "#76ab2f",
-            "&:hover": {
-              backgroundColor: "#5a8f24",
-            },
+            color: "#76ab2f",
+            p: 1,
           }}
         >
-          Send
-        </Button>
+          <FaPaperPlane />
+        </IconButton>
       </Box>
     </Box>
   );

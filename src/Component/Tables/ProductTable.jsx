@@ -91,7 +91,7 @@ export default function ProductTable({ Products }) {
               <TableCell>Weight</TableCell>
               <TableCell>Brand</TableCell>
               <TableCell>Product Rate</TableCell>
-              <TableCell>Position</TableCell>
+              <TableCell>Location</TableCell>
               <TableCell>Available</TableCell>
               <TableCell></TableCell>
             </TableRow>

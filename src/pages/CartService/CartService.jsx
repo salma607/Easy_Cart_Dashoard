@@ -181,10 +181,10 @@ export default function CartService() {
                   fontWeight: "bold",
                 }, }}>
                   <TableRow>
-                    <TableCell>Cart Code</TableCell>
+                    <TableCell>Cart ID</TableCell>
                     <TableCell>Last Service Date</TableCell>
                     <TableCell>Status</TableCell>
-                    <TableCell>Position</TableCell>
+                    <TableCell>Location</TableCell>
                     <TableCell>Battery</TableCell>
                     <TableCell></TableCell>
                   </TableRow>

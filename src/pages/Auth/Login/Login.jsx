@@ -11,7 +11,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import foodImage from "/src/assets/food.png"; // Import the image here
 import { loginUser } from "../../../redux/services/AuthService";
 
@@ -43,11 +42,12 @@ export default function Login() {
     dispatch(loginUser({ username, password }));
 
     // Check if the token exists in local storage and redirect
-    if (localStorage.getItem("token")) {
+    
+   const result= await dispatch(loginUser({username, password }));
+    if (result.meta.requestStatus === "fulfilled") {
       navigate("/Home");
     }
   };
-
   return (
     <div className="p-8 sm:p-4 bg-[#7fb833] min-h-screen flex items-center justify-center">
       <div className="grid lg:grid-cols-2 grid-cols-1 shadow-xl rounded-lg overflow-hidden w-full max-w-6xl bg-white">
@@ -80,9 +80,11 @@ export default function Login() {
               label="Username"
               name="username"
               variant="outlined"
+              color= "#e0e0e0"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               sx={{
+                
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": { borderColor: "#e0e0e0" },
                   "&:hover fieldset": { borderColor: "#76ab2f" },
@@ -96,6 +98,7 @@ export default function Login() {
             <FormControl
               variant="outlined"
               className="w-full"
+              color= "#e0e0e0"
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": { borderColor: "#e0e0e0" },

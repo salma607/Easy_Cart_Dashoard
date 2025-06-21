@@ -16,7 +16,6 @@ import { sxStyles, initialChats } from "../Chat/Component/constants";
 import DotsLoader from "../../Component/DotsLoader/DotsLoader"; 
 import ComponentChat from "../Chat/Component/ChatComponent";
 
-
 export default function Chat() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -93,7 +92,6 @@ export default function Chat() {
 
   const filteredChats = chats.filter((chat) => {
     if (filter === "unread" && !chat.unread) return false;
-    if (filter === "favourite" && !chat.favourite) return false;
     if (
       searchTerm &&
       !chat.id.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -154,9 +152,6 @@ export default function Chat() {
             >
               <MenuItem onClick={() => setFilter("all")}>All</MenuItem>
               <MenuItem onClick={() => setFilter("unread")}>Unread</MenuItem>
-              <MenuItem onClick={() => setFilter("favourite")}>
-                Favourite
-              </MenuItem>
             </Menu>
           </Box>
 
@@ -169,25 +164,35 @@ export default function Chat() {
                   ...sxStyles.chatListItem,
                   ...(selectedChat?.id === chat.id &&
                     sxStyles.chatListItemSelected),
+                  display: 'flex',
+                  alignItems: 'center',
+                  px: 2,
+                  py: 1.5,
+                  cursor: 'pointer',
                 }}
                 onClick={() => handleChatSelect(chat)}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography sx={{
+                    ...sxStyles.chatListItemText,
+                    fontWeight: "bold",
+                    color: "#76ab2f",
+                    fontSize: "1.25rem",
+                  }}>
+                    {chat.id}
+                  </Typography>
                   {chat.unread && (
                     <Box
                       sx={{
-                        ...sxStyles.unreadIndicator,
-                        backgroundColor: "#76ab2f",
-                        width: 10,
-                        height: 10,
+                        width: 12,
+                        height: 12,
                         borderRadius: "50%",
-                        marginRight: 1,
+                        backgroundColor: "#76ab2f",
+                        ml: 1.5, // small gap to the right of the name
+                        display: "inline-block",
                       }}
-                    ></Box>
+                    />
                   )}
-                  <Typography sx={sxStyles.chatListItemText}>
-                    {chat.id}
-                  </Typography>
                 </Box>
               </Box>
             ))}
@@ -195,6 +200,7 @@ export default function Chat() {
         </Grid>
       ) : null}
 
+      {/* ...rest of the component remains unchanged... */}
       <Grid
         item
         xs={12}

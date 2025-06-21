@@ -1,30 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Bar from "./GraphsComponent/Bar";
 import Line from "./GraphsComponent/line";
-import Piechart from "./GraphsComponent/Piechart";
+import Radar from "./GraphsComponent/Radar/Radar";
 import Scatter from "./GraphsComponent/scatter";
 
 export default function Graphs() {
+  // Standard chart sizes
+  const chartWidth = 350;
+  const chartHeight = 300;
+
   const graphs = [
-    { id: 1, component: <Line />, title: "Product Sales by Category/day" },
-    { id: 2, component: <Scatter />, title: "Electronics Product Analysis" },
-    { id: 3, component: <Piechart />, title: "Product Category Pie Chart" },
-    { id: 4, component: <Bar />, title: "Category Data Visualization/month" },
+    { id: 1, component: <Line width={chartWidth} height={chartHeight} />, title: "Product Sales by Category/day", name: "Line Chart" },
+    { id: 2, component: <Scatter width={chartWidth} height={chartHeight} />, title: "Electronics Product Analysis", name: "Scatter Plot" },
+    { id: 3, component: <Radar width={chartWidth} height={chartHeight} />, title: "Branch Sales Analysis", name: "Radar Chart" },
+    { id: 4, component: <Bar width={chartWidth} height={chartHeight} />, title: "Category Data Visualization/month", name: "Bar Chart" },
   ];
 
-  // State to track window width (for responsive rendering)
   const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
+    typeof window !== "undefined" ? window.innerWidth : 1000
   );
   const [currentPage, setCurrentPage] = useState(0);
 
-  // Listen for window resize (no useEffect; set handler directly)
-  if (typeof window !== "undefined") {
-    window.onresize = () => {
+  useEffect(() => {
+    const handleResize = () => {
       setWindowWidth(window.innerWidth);
-      setCurrentPage(0); // Optionally reset to first page when switching layout
+      setCurrentPage(0);
     };
-  }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const isMobile = windowWidth < 768;
   const pageSize = isMobile ? 1 : 2;
@@ -55,6 +59,10 @@ export default function Graphs() {
               </h2>
               <div className="w-full max-w-xs md:max-w-md">
                 {graph.component}
+              </div>
+              {/* Small name at the bottom of each chart */}
+              <div className="mt-2 text-xs text-gray-500 font-medium">
+                {graph.name}
               </div>
             </div>
           ))}

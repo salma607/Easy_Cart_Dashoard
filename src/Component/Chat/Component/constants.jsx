@@ -114,4 +114,16 @@ export const sxStyles = {
       unread: true,
       favourite: false,
     },
+    {
+      id: "Easycart003",
+      message: "Hello, I have an issue with my cart.",
+      unread: true,
+      favourite: false,
+    },
+    {
+      id: "Easycart004",
+      message: "Hello, I have an issue with my cart.",
+      unread: false,
+      favourite: false,
+    },
   ];

@@ -15,8 +15,8 @@ import {
 import { Cancel, CheckCircle, Star, StarHalf } from '@mui/icons-material';
 import Sidebar from "../../Component/Sidebar/Side";
 import Header from "../../Component/Header/Header";
-import DotsLoader from "../../Component/DotsLoader/DotsLoader"; // Import DotsLoader
-import 'tailwindcss/tailwind.css'; // Ensure Tailwind CSS is imported
+import DotsLoader from "../../Component/DotsLoader/DotsLoader";
+import 'tailwindcss/tailwind.css';
 
 const initialOrdersData = [
   { id: 1, date: '2025-03-01', price: '$150', code: 'ORD001', status: 'canceled', delivery: 'delivery', email: 'john.doe@example.com', name: 'John Doe', weight: '5kg', rate: 1.2 },
@@ -35,7 +35,6 @@ const renderStars = (rate) => {
   const fullStars = Math.floor(rate);
   const hasHalfStar = rate % 1 !== 0;
   const stars = [];
-
   for (let i = 0; i < fullStars; i++) {
     stars.push(<Star key={i} style={{ color: '#FFD700' }} />);
   }
@@ -50,17 +49,16 @@ const renderStars = (rate) => {
 
 export default function Order() {
   const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    // Simulate a delay to fetch orders
     const fetchOrders = async () => {
       setTimeout(() => {
         setOrders(initialOrdersData);
-        setIsLoading(false); // Set loading to false after fetching data
-      }, 2000); // Simulated delay
+        setIsLoading(false);
+      }, 2000);
     };
     fetchOrders();
   }, []);
@@ -83,7 +81,7 @@ export default function Order() {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to the first page
+    setPage(0);
   };
 
   if (isLoading) {
@@ -141,7 +139,7 @@ export default function Order() {
                           )
                         ) : (
                           order.status === 'checked' ? (
-                            <Chip label="Checked" sx={{ backgroundColor: "#76ab2f", color: "white" }} />
+                            <Chip label="Checked" sx={{ backgroundColor: "#FFD400", color: "black" }} />
                           ) : (
                             <Chip label="Canceled" color="error" />
                           )
