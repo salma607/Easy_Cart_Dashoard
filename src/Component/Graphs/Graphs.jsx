@@ -5,17 +5,7 @@ import Radar from "./GraphsComponent/Radar/Radar";
 import Scatter from "./GraphsComponent/scatter";
 
 export default function Graphs() {
-  // Standard chart sizes
-  const chartWidth = 350;
-  const chartHeight = 300;
-
-  const graphs = [
-    { id: 1, component: <Line width={chartWidth} height={chartHeight} />, title: "Product Sales by Category/day", name: "Line Chart" },
-    { id: 2, component: <Scatter width={chartWidth} height={chartHeight} />, title: "Electronics Product Analysis", name: "Scatter Plot" },
-    { id: 3, component: <Radar width={chartWidth} height={chartHeight} />, title: "Branch Sales Analysis", name: "Radar Chart" },
-    { id: 4, component: <Bar width={chartWidth} height={chartHeight} />, title: "Category Data Visualization/month", name: "Bar Chart" },
-  ];
-
+  // Responsive chart sizes
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1000
   );
@@ -30,7 +20,17 @@ export default function Graphs() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isMobile = windowWidth < 768;
+  const isMobile = windowWidth < 760;
+  const chartWidth = isMobile ? 280 : 350;
+  const chartHeight = isMobile ? 200 : 300;
+
+  const graphs = [
+    { id: 1, component: <Line width={chartWidth} height={chartHeight} />, title: "Product Sales by Category/day", name: "Line Chart" },
+    { id: 2, component: <Scatter width={chartWidth} height={chartHeight} />, title: "Electronics Product Analysis", name: "Scatter Plot" },
+    { id: 3, component: <Radar width={chartWidth} height={chartHeight} />, title: "Branch Sales Analysis", name: "Radar Chart" },
+    { id: 4, component: <Bar width={chartWidth} height={chartHeight} />, title: "Category Data Visualization/month", name: "Bar Chart" },
+  ];
+
   const pageSize = isMobile ? 1 : 2;
   const totalPages = Math.ceil(graphs.length / pageSize);
 
