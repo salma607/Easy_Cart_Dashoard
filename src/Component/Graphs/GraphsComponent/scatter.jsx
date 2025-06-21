@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 
 const dataset = [
@@ -34,11 +35,28 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-export default function scatter() {
+export default function ScatterResponsive() {
+  const [chartSize, setChartSize] = useState({
+    width: typeof window !== "undefined" && window.innerWidth < 760 ? 280 : 400,
+    height: typeof window !== "undefined" && window.innerWidth < 760 ? 200 : 300,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 760;
+      setChartSize({
+        width: isMobile ? 300 : 400,
+        height: isMobile ? 220 : 300,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <ScatterChart
-      width={400}
-      height={300}
+      width={chartSize.width}
+      height={chartSize.height}
       margin={{ top: 10, right: 10, bottom: 50, left: 50 }}
     >
       <CartesianGrid />

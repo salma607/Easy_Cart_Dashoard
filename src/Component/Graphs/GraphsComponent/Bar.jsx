@@ -1,6 +1,24 @@
+import { useState, useEffect } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 export default function Bar() {
+  const [chartSize, setChartSize] = useState({
+    width: typeof window !== "undefined" && window.innerWidth < 760 ? 300 : 400,
+    height: typeof window !== "undefined" && window.innerWidth < 760 ? 220 : 360,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 760;
+      setChartSize({
+        width: isMobile ? 300 : 350,
+        height: isMobile ? 220 : 300,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Define months for the X axis
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
 
@@ -46,8 +64,8 @@ export default function Bar() {
         xAxis={barChartXAxis}
         series={barChartSeries}
         dataset={exampleDataset}
-        height={Math.min(window.innerWidth * 0.7, 350)}
-        width={Math.min(window.innerWidth - 20, 500)}
+        height={chartSize.height}
+        width={chartSize.width}
         margin={{
           top: 40,
           bottom: 40,
