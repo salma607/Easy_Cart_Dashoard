@@ -41,7 +41,6 @@ export default function AddProduct({ onProductAdded }) {
   const textFieldSx = {
     fullWidth: true,
     variant: "outlined",
-    color: "#e0e0e0",
     sx: {
       "& .MuiOutlinedInput-root": {
         "& fieldset": {
@@ -87,7 +86,7 @@ export default function AddProduct({ onProductAdded }) {
       // Make POST request to the online API
       const response = await axios.post(
         "https://shehab123.pythonanywhere.com/product/add/",
-        newProduct, // Send as a dictionary (not a list)
+        newProduct,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -110,7 +109,7 @@ export default function AddProduct({ onProductAdded }) {
           ProductName: "",
           ProductPrice: "",
           ProductWeight: "",
-          ProductWeightUnit: "Kg", // Reset to default unit
+          ProductWeightUnit: "Kg",
           ProductBrand: "",
           ProductPlace: "",
           ProductAvailable: "Yes",
@@ -124,6 +123,9 @@ export default function AddProduct({ onProductAdded }) {
         });
 
         setOpenAddDialog(false); // Close dialog
+
+        // Refresh page after adding product
+        window.location.reload();
       } else {
         setError("Failed to add product. Please try again.");
       }
@@ -145,7 +147,6 @@ export default function AddProduct({ onProductAdded }) {
         <IconButton
           sx={IconSx}
           onClick={() => setOpenFilterDialog(true)}
-          // Fixed attribute usage warnings
           aria-label="Open filter dialog"
         >
           <FilterListIcon sx={{ fontSize: 30 }} />
@@ -167,6 +168,7 @@ export default function AddProduct({ onProductAdded }) {
             margin="dense"
             label="Product Id"
             value={newProduct.QRNumber}
+            color="#e0e0e0"
             onChange={(e) =>
               setNewProduct({ ...newProduct, QRNumber: e.target.value })
             }
@@ -176,6 +178,7 @@ export default function AddProduct({ onProductAdded }) {
             autoFocus
             margin="dense"
             label="Product Name"
+            color="#e0e0e0"
             value={newProduct.ProductName}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductName: e.target.value })
@@ -186,6 +189,7 @@ export default function AddProduct({ onProductAdded }) {
             margin="dense"
             label="Product Price"
             type="number"
+            color="#e0e0e0"
             value={newProduct.ProductPrice}
             onChange={(e) =>
               setNewProduct({
@@ -199,6 +203,7 @@ export default function AddProduct({ onProductAdded }) {
             <TextField
               label="Product Weight"
               type="number"
+              color="#e0e0e0"
               value={newProduct.ProductWeight}
               onChange={(e) =>
                 setNewProduct({
@@ -206,12 +211,27 @@ export default function AddProduct({ onProductAdded }) {
                   ProductWeight: e.target.value,
                 })
               }
-              {...textFieldSx}
-              sx={{ width: "60%" }}
+              fullWidth
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#e0e0e0",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#76ab2f",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#76ab2f",
+                  },
+                },
+                width: "60%",
+              }}
             />
             <TextField
               select
               label="Unit"
+              color="#e0e0e0"
               value={newProduct.ProductWeightUnit}
               onChange={(e) =>
                 setNewProduct({
@@ -219,7 +239,20 @@ export default function AddProduct({ onProductAdded }) {
                   ProductWeightUnit: e.target.value,
                 })
               }
-              sx={{ width: "35%" }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#e0e0e0",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#76ab2f",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#76ab2f",
+                  },
+                },
+                width: "35%",
+              }}
             >
               <MenuItem value="Kg">Kg</MenuItem>
               <MenuItem value="g">g</MenuItem>
@@ -229,6 +262,7 @@ export default function AddProduct({ onProductAdded }) {
             margin="dense"
             label="Product Category"
             select
+            color="#e0e0e0"
             value={newProduct.ProductCategory}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductCategory: e.target.value })
@@ -247,6 +281,7 @@ export default function AddProduct({ onProductAdded }) {
           <TextField
             margin="dense"
             label="Product Brand"
+            color="#e0e0e0"
             value={newProduct.ProductBrand}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductBrand: e.target.value })
@@ -256,6 +291,7 @@ export default function AddProduct({ onProductAdded }) {
           <TextField
             margin="dense"
             label="Product Rate"
+            color="#e0e0e0"
             value={newProduct.ProductTotalRate}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductTotalRate: e.target.value })
@@ -265,6 +301,7 @@ export default function AddProduct({ onProductAdded }) {
           <TextField
             margin="dense"
             label="Product place"
+            color="#e0e0e0"
             value={newProduct.ProductPlace}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductPlace: e.target.value })
@@ -275,6 +312,7 @@ export default function AddProduct({ onProductAdded }) {
             margin="dense"
             label="Product Available"
             select
+            color="#e0e0e0"
             value={newProduct.ProductAvailable}
             onChange={(e) =>
               setNewProduct({ ...newProduct, ProductAvailable: e.target.value })

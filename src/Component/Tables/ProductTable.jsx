@@ -11,16 +11,16 @@ import {
   TablePagination,
   CircularProgress,
 } from "@mui/material";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function ProductTable({ Products }) {
-  const [page, setPage] = useState(0); // Current page number
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Number of rows per page
-  const [deleting, setDeleting] = useState(null); // Track which product is being deleted
+  const [localProducts, setLocalProducts] = useState(Products);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [deleting, setDeleting] = useState(null);
 
   const handleDelete = async (QRNumber) => {
-    setDeleting(QRNumber); // Set the product being deleted
+    setDeleting(QRNumber);
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -35,16 +35,18 @@ export default function ProductTable({ Products }) {
       );
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Product deleted successfully:", data);
-        window.location.reload(); // Reload the page to reflect changes
+        setLocalProducts((prev) => prev.filter((p) => p.QRNumber !== QRNumber));
+        // Adjust page if needed
+        if ((page * rowsPerPage) >= (localProducts.length - 1) && page > 0) {
+          setPage(page - 1);
+        }
       } else {
         console.error("Failed to delete product:", response.statusText);
       }
     } catch (error) {
       console.log("Error while deleting the product:", error);
     } finally {
-      setDeleting(null); // Reset the deleting state
+      setDeleting(null);
     }
   };
 
@@ -54,18 +56,16 @@ export default function ProductTable({ Products }) {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to the first page
+    setPage(0);
   };
 
-  // Calculate the products to display on the current page
-  const paginatedProducts = Products.slice(
+  const paginatedProducts = localProducts.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
   return (
     <div>
-      {/* Product Table */}
       <TableContainer
         component={Paper}
         sx={{ mt: 3, borderRadius: "8px", overflow: "auto", maxHeight: "750px" }}
@@ -102,7 +102,11 @@ export default function ProductTable({ Products }) {
                 <TableCell>{product.QRNumber}</TableCell>
                 <TableCell>{product.ProductName}</TableCell>
                 <TableCell>{product.ProductCategory}</TableCell>
-                <TableCell>${product.ProductPrice.toFixed(2)}</TableCell>
+                <TableCell>
+                  {product.ProductPrice !== undefined && product.ProductPrice !== null
+                    ? `LE${Number(product.ProductPrice).toFixed(2)}`
+                    : ""}
+                </TableCell>
                 <TableCell>{product.ProductWeight}kg</TableCell>
                 <TableCell>{product.ProductBrand}</TableCell>
                 <TableCell>{product.ProductTotalRate}</TableCell>
@@ -130,15 +134,14 @@ export default function ProductTable({ Products }) {
             ))}
           </TableBody>
         </Table>
-        {/* Pagination Controls */}
         <TablePagination
           component="div"
-          count={Products.length} // Total number of products
+          count={localProducts.length}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 15, 20, 25]} // Options for rows per page
+          rowsPerPageOptions={[5, 10, 15, 20, 25]}
         />
       </TableContainer>
     </div>
