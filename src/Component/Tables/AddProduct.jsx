@@ -11,12 +11,10 @@ import {
   IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import axios from "axios"; // Import axios for API calls
 
 export default function AddProduct({ onProductAdded }) {
   const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [setOpenFilterDialog] = useState(false); // Fixed destructuring
   const [loading, setLoading] = useState(false); // State to manage loading
   const [error, setError] = useState(""); // State to handle errors
 
@@ -144,13 +142,7 @@ export default function AddProduct({ onProductAdded }) {
     <div>
       {/* Add and Filter Buttons */}
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <IconButton
-          sx={IconSx}
-          onClick={() => setOpenFilterDialog(true)}
-          aria-label="Open filter dialog"
-        >
-          <FilterListIcon sx={{ fontSize: 30 }} />
-        </IconButton>
+       
         <IconButton
           sx={IconSx}
           onClick={() => setOpenAddDialog(true)}
